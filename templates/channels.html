@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% block title %}Channels{% endblock %}
+
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<body>
+  <div class="row flex-nowrap chat">
+    <div class="left-bar">
+      <h1 id="user">{{ user }}<a class="nav-link" style="color: red;" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"></a></h1>
+      <hr>
+      <h1 id="heading">Channels<button type="button" class="btn-link add" data-toggle="modal" data-target="#createChannel"><span class="glyphicon glyphicon-plus-sign"></span></button></h1>
+      <ul id="list-channels">
+        {% for channel in channels %}
+          <li><span class="glyphicon glyphicon-triangle-right"></span><a href="/channels/{{ channel }}"> {{ channel }}</a></li>
+        {% endfor %}
+      </ul>
+      <hr>
+      <h1 id="heading">Users</h1>
+      <br>
+      <ul id="list-users">
+        {% for user in logged_users %}
+          <li><span class="glyphicon glyphicon-user"></span> {{ user }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col chat-container">
+      <div class="list-message">
+        {% if session.existing_channel != 'general' %}
+          <h2>#{{ session.existing_channel }}<button type="button" class="btn-xs btn-link" data-toggle="modal" data-target="#deleteChannel"><span style="margin-left:10px; color:red" class="glyphicon glyphicon-remove-circle"></span></button></h2>
+        {% else %}
+          <h2>#{{ session.existing_channel }}</h2>
+        {% endif %}
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Themes
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" onclick="black('black');">Black</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
+        <hr>
+        <textarea id="msg" readonly>
+          {%- if messages -%}
+            {%- for message in messages -%}
+              [{{ message[1] }}]: - {{ message[0] }} {{"\n"}} {{ message[2] }} {{"\n"}}
+            {%- endfor -%}
+          {%- endif -%}
+        </textarea>
+      </div>
+      <form>
+        <div class="input-group send-message">
+          <input id="message" type="text" class="form-control" placeholder="Message #{{ session.existing_channel }}"">
+          <div class="input-group-append">
+            <button id="send" type="submit" class="btn btn-dark"><span class="glyphicon glyphicon-send"></span></button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal fade" id="createChannel" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="create">Create Channel</h5>
+          </div>
+          <div class="modal-body">
+            <form id="channel" class="form" action="/create" method="post">
+              <div style="text-align: center;" class="form-group mx-sm-3 mb-2">
+                <label for="name">Channel Name</label>
+                <input class="form-control" id="channel" name="channel" type="text" placeholder="Channel Name">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-success" onclick="event.preventDefault();document.getElementById('channel').submit();">Create!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="deleteChannel" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="deleteChannel">Delete Channel</h3>
+          </div>
+          <div class="modal-body">
+            <form id="confirmation" class="form" action="/delete" method="post">
+              <div style="text-align: center;" class="form-group mx-sm-3 mb-2">
+                <p style="color:red">Do you really want to delete {{ session.existing_channel }} channel?<p>
+                <div class="form-group form-check-inline">
+                  <input type="radio" name="options" value="Yes"> Yes
+                  <input type="radio" name="options" value="No"> No
+                  <hr>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" onclick="event.preventDefault();document.getElementById('confirmation').submit();">DELETE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var textarea = document.getElementById("msg");
+    textarea.scrollTop = textarea.scrollHeight;
+    function black(color) {
+      alert(color);
+      document.getElementById("left-bar").style.background = color;
+    }
+  </script>
+</body>
+{% endblock %}

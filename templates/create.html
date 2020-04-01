@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Create Channel{% endblock %}
+
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<body>
+  <div class="create-form">
+    <div class="create">
+      <form class="form" action="/create" method="post">
+        <h4 class="text-dark text-center">Channel Name</h4>
+        <div class="form-group">
+          <input type="text" name="channel" is="channel" class="form-control" placeholder="Channel Name" required="required">
+        </div>
+        <input type="submit" name="submit" class="btn btn-success btn-block btn-lg" value="Create!">
+      </form>
+    </div>
+  </div>
+</body>
+{% endblock %}
